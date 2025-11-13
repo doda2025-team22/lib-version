@@ -1,3 +1,6 @@
+#Workflow that creates a new package on any new release or when manually triggered 
+
+
 name: release library package
 on:
   release:
