@@ -19,7 +19,7 @@ jobs:
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Build Maven Package
-        run: mvn -B package -f pom.xml
+        run: mvn -B package -f /lib-version/pom.xml
 
       - name: publish the package to github packages
         run: mvn deploy -s ${{ github.workspace }}/settings.xml
