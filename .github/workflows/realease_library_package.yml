@@ -25,6 +25,6 @@ jobs:
         run: mvn -B package -f lib_version/pom.xml
 
       - name: publish the package to github packages
-        run: mvn deploy -s ${{ github.workspace }}/settings.xml
+        run: mvn deploy -f lib_version/pom.xml -s ${{ github.workspace }}/settings.xml
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
