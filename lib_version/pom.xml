@@ -7,6 +7,17 @@
   <version>1.0-SNAPSHOT</version>
   <name>lib_version</name>
   <url>http://maven.apache.org</url>
+
+
+  <distributionManagement>
+    <repository>
+      <id>doda-team22_libversion</id>
+      <name>doda_team22 Maven Packages</name>
+      <url>https://maven.pkg.github.com/doda2025-team22/lib-version</url>
+    </repository>
+  </distributionManagement>
+
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
