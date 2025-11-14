@@ -35,4 +35,9 @@ public class VersionUtilTest
     {
         assertTrue( true );
     }
+
+    public void testGetVersion()
+    {
+        assertEquals(VersionUtil.getVersion(), "1.0-SNAPSHOT");
+    }
 }

@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class VersionUtil {
+ public class VersionUtil {
 
-    public String getVersion() {
+    static public String getVersion() {
         Properties props = new Properties();
         InputStream resourceStream = VersionUtil.class.getResourceAsStream("/version.properties");
         try {

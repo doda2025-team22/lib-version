@@ -7,6 +7,12 @@
   <version>1.0-SNAPSHOT</version>
   <name>lib-version</name>
 
+  <!-- We specify the java version -->
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+  </properties>
+
   <!-- This is added to filter through the version file to keep it up-to-date -->
   <build>
     <resources>
