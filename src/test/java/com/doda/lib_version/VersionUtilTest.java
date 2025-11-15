@@ -7,7 +7,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class AppTest 
+public class VersionUtilTest
     extends TestCase
 {
     /**
@@ -15,7 +15,7 @@ public class AppTest
      *
      * @param testName name of the test case
      */
-    public AppTest( String testName )
+    public VersionUtilTest(String testName )
     {
         super( testName );
     }
@@ -25,7 +25,7 @@ public class AppTest
      */
     public static Test suite()
     {
-        return new TestSuite( AppTest.class );
+        return new TestSuite( VersionUtilTest.class );
     }
 
     /**
@@ -34,5 +34,10 @@ public class AppTest
     public void testApp()
     {
         assertTrue( true );
+    }
+
+    public void testGetVersion()
+    {
+        assertEquals(VersionUtil.getVersion(), "1.0-SNAPSHOT");
     }
 }

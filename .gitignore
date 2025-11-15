@@ -3,7 +3,7 @@
 .LSOverride
 
 .idea
-/lib_version/target/
+/target/
 /target/
 *.log
 *.class
