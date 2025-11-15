@@ -1,5 +1,4 @@
-#Workflow that creates a new package on any new release or when manually triggered 
-
+#Workflow that creates a new package on any new release or when manually triggered
 
 name: release library package
 on:
@@ -22,9 +21,9 @@ jobs:
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Build Maven Package
-        run: mvn -B package -f lib_version/pom.xml
+        run: mvn -B package -f pom.xml
 
       - name: publish the package to github packages
-        run: mvn deploy -f lib_version/pom.xml -s ${{ github.workspace }}/settings.xml
+        run: mvn deploy -s ${{ github.workspace }}/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
