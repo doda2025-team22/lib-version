@@ -1,10 +1,11 @@
 #Workflow that creates a new package on any new release or when manually triggered
 name: release library package
 on:
-  workflow_dispatch: #Manually create a release package
+  #Manually create a release package
+  workflow_dispatch:
   push:
-    tags:
-      - v[0-9]+.[0-9]+.[0-9]+
+    # tags:
+    #   - v[0-9]+.[0-9]+.[0-9]+
 
 jobs:
   build_package:
