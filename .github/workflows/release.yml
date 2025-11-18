@@ -21,7 +21,7 @@ jobs:
         # Parse the input version tag (from the tag push) and store it in an environment variable
         run: |
           # Removes the v in the ref name == vX.Y.Z
-          VERSION = $GITHUB_REF_NAME#v
+          VERSION = ${GITHUB_REF_NAME#v}
           echo "version=$VERSION" >> $GITHUB_ENV
 
       - name: Setup JDK 25 # Java -v >= 25.0.1
