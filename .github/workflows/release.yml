@@ -34,7 +34,9 @@ jobs:
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Set the Maven Version
-        run: mvn versions:set -DnewVersion=$VERSION #or mvn -Drevision=$VERSION clean package https://maven.apache.org/guides/mini/guide-maven-ci-friendly.html
+        run: |
+          mvn versions:set -DnewVersion=$VERSION #or mvn -Drevision=$VERSION clean package https://maven.apache.org/guides/mini/guide-maven-ci-friendly.html
+          mvn versions:commit
 
       - name: Build Maven Package
         run: mvn --batch-mode package --file pom.xml
