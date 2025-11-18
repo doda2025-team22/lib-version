@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Setup JDK 25 # Java -v >= 25.0.1
@@ -19,6 +20,7 @@ jobs:
         with:
           java-version: "25"
           distribution: "temurin"
+          cache: "maven"
           server-id: doda-team22_libversion # Value of the distributionManagement id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
