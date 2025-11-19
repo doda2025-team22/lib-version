@@ -4,7 +4,7 @@
   <groupId>com.doda.lib_version</groupId>
   <artifactId>lib-version</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.4-SNAPSHOT</version>
   <name>lib-version</name>
 
   <!-- We specify the java version -->
