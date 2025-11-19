@@ -1,0 +1,70 @@
+#Workflow that creates a new package on any new release or when manually triggered
+name: release version-aware package
+on:
+  #Manually create a release package
+  workflow_dispatch:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+jobs:
+  build_package:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: write #to be able to commit the pom file
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 25 # Java -v >= 25.0.1
+        uses: actions/setup-java@v4 # Creates a settings.xml
+        with:
+          java-version: "25"
+          distribution: "temurin"
+          cache: "maven"
+          server-id: doda-team22_libversion # Value of the distributionManagement id field of the pom.xml
+          settings-path: ${{ github.workspace }} # location for the settings.xml file
+
+      # New and experimental
+      - name: Read pom.xml version tag
+        # Parse the input version tag (from the tag push) and store it in an environment variable
+        # https://maven.apache.org/plugins/maven-help-plugin/evaluate-mojo.html
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) 
+          echo "Project version: " $VERSION
+          RELEASE=${VERSION%-SNAPSHOT}
+          MAJOR=$(echo "$RELEASE" | cut -d . -f 1)
+          MINOR=$(echo "$RELEASE" | cut -d . -f 2)
+          PATCH=$(echo "$RELEASE" | cut -d . -f 3)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
+          echo "RELEASE_MAJOR=$MAJOR" >> $GITHUB_ENV
+          echo "RELEASE_MINOR=$MINOR" >> $GITHUB_ENV
+          echo "RELEASE_PATCH=$PATCH" >> $GITHUB_ENV
+
+      #UPDATE THE RELEASE BASED ON MAIN or BRANCH
+      - name: Update Maven to release tag
+        #Versions:use-release only updates the dependencies, not the project
+        run: mvn versions:set -DnewVersion=$RELEASE
+
+      - name: Build Maven Package
+        run: mvn --batch-mode package --file pom.xml
+
+      - name: publish the package to github packages
+        run: mvn deploy --settings ${{ github.workspace }}/settings.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set New Maven Version
+        run: |
+          mvn versions:set -DnewVersion=$RELEASE_MAJOR.$RELEASE_MINOR.$((RELEASE_PATCH + 1))-SNAPSHOT
+          mvn versions:commit
+
+      - name: Commit new maven version to git
+        run: |
+          git config user.name "ghactions-MAIN ($GITHUB_ACTOR)"
+          git config user.email ""
+          git add pom.xml
+          git commit -m "Github action: Releasing newly updated pom.xml as a result of $GITHUB_WORKFLOW workflow"
+          git push
