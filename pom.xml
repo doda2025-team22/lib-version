@@ -1,59 +1,148 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.doda.lib_version</groupId>
   <artifactId>lib-version</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1-SNAPSHOT</version>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+  <version>0.0.1-SNAPSHOT</version>
+=======
+  <version>lib-version-1.2.3-ftb-f11-20081117.213112-166</version>
+>>>>>>> 93f1a54 (':' not allowed in version)
+=======
+  <version>doda2025-team22/lib-version-1.2.3-ftb-f11-2025-11-19</version>
+>>>>>>> 0a9732e (Github action: Releasing newly updated pom.xml as a result of release version-aware package workflow)
+=======
+  <version>doda2025-team22/lib-version-1.2.3-ftb-f11-2025-11-19-21-17</version>
+>>>>>>> 5021516 (Github action: Releasing newly updated pom.xml as a result of release version-aware package workflow)
+=======
+  <version>doda2025-team22/lib-version-1.2.3-ftb-f11-2025-11-19-21-21</version>
+>>>>>>> d053522 (Github action: Releasing newly updated pom.xml as a result of release version-aware package workflow)
+=======
+  <version>lib-version-1.2.3-ftb-f11-2025-11-19-21-28</version>
+>>>>>>> 12e10d7 (Github action: Releasing newly updated pom.xml as a result of release version-aware package workflow)
   <name>lib-version</name>
+=======
+  <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.doda.lib_version</groupId>
+    <artifactId>lib-version</artifactId>
+    <packaging>jar</packaging>
+    <version>2.0.1-SNAPSHOT</version>
+    <name>lib-version</name>
+>>>>>>> 88378de (Made some changes to the individual release files. They now only)
+=======
+    <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+      <modelVersion>4.0.0</modelVersion>
+      <groupId>com.doda.lib_version</groupId>
+      <artifactId>lib-version</artifactId>
+      <packaging>jar</packaging>
+      <version>2.0.1-SNAPSHOT</version>
+      <name>lib-version</name>
+>>>>>>> a190fb7 (Added a profile to the pom to add the featuer branch to the version. branch and main both trigger using the 'release' tag, they will both subsequently delete that tag from remote and upload a new tag with the updated version and deploy a package to the github package registry. I have tried for ages now to change the order for the branch versioning but i dont see a simple or linear solution so i decided im just not gonna.)
 
-  <!-- We specify the java version -->
-  <properties>
-    <maven.compiler.source>25</maven.compiler.source>
-    <maven.compiler.target>25</maven.compiler.target>
-  </properties>
+      <!-- We specify the java version -->
+      <properties>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+      </properties>
 
-  <!-- This is added to filter through the version file to keep it up-to-date -->
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
+      <!-- This is added to filter through the version file to keep it up-to-date -->
+    <profiles>
+      <profile>
+        <id>attach-branch-classifier</id>
+        <activation>
+          <property>
+            <name>branch</name>
+          </property>
+        </activation>
+        <build>
+<!-- Add a classifier -> input a branch name to the deployed package -->
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>build-helper-maven-plugin</artifactId>
+              <version>3.6.1</version>
+              <executions>
+                <execution>
+                  <id>attach-artifacts</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>attach-artifact</goal>
+                  </goals>
+                  <configuration>
+                    <skip>${branch}</skip>
+                    <artifacts>
+                      <artifact>
+                        <file>${project.build.directory}/${project.build.finalName}.jar</file>
+                        <type>jar</type>
+                        <classifier>${branch}</classifier>
+                      </artifact>
+                    </artifacts>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </build>
+      </profile>
+    </profiles>
 
-    <!-- Adding this plugin to hopehully skip tests -->
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.12.4</version>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
-    </plugins>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
 
-  </build>
+        <!-- Adding this plugin to hopehully skip tests -->
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.12.4</version>
+            <configuration>
+              <skipTests>true</skipTests>
+            </configuration>
+          </plugin>
+        </plugins>
 
-  <url>http://maven.apache.org</url>
+      </build>
+
+      <url>http://maven.apache.org</url>
 
 
-  <distributionManagement>
-    <repository>
-      <id>doda-team22_libversion</id>
-      <name>doda_team22 Maven Packages</name>
-      <url>https://maven.pkg.github.com/doda2025-team22/lib-version</url>
-    </repository>
-  </distributionManagement>
+      <distributionManagement>
+        <repository>
+          <id>doda-team22_libversion</id>
+          <name>doda_team22 Maven Packages</name>
+          <url>https://maven.pkg.github.com/doda2025-team22/lib-version</url>
+        </repository>
+        
+        <snapshotRepository>
+          <id>doda-team22_libversion</id>
+          <name>doda_team22 Maven Packages (Snapshots)</name>
+          <url>https://maven.pkg.github.com/doda2025-team22/lib-version</url>
+      </snapshotRepository>
+
+      </distributionManagement>
 
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-</project>
+      <dependencies>
+        <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>3.8.1</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </project>
