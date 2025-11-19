@@ -2,7 +2,7 @@
 name: release version-aware package
 on:
   #Manually create a release package
-  # workflow_dispatch:
+  workflow_dispatch:
   push:
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
