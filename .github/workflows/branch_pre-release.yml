@@ -38,7 +38,7 @@ jobs:
         #Versions:use-release only updates the dependencies, not the project
         run: |
           DATE=$(date +%Y-%m-%d-%H-%M)  
-          mvn versions:set -DnewVersion=${GITHUB_REPOSITORY#GITHUB_REPOSITORY_OWNER}-$VERSION_NUM-${GITHUB_REF_NAME//\//-}-$DATE
+          mvn versions:set -DnewVersion=${GITHUB_REPOSITORY##*/}-$VERSION_NUM-${GITHUB_REF_NAME//\//-}-$DATE
 
       - name: Build Maven Package
         run: mvn --batch-mode package --file pom.xml
