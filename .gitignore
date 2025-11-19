@@ -3,3 +3,7 @@
 .LSOverride
 
 .idea
+/target/
+/target/
+*.log
+*.class
