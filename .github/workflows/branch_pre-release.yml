@@ -37,7 +37,7 @@ jobs:
       - name: Update Maven to release tag
         #Versions:use-release only updates the dependencies, not the project
         run: |
-          DATE=$(date +%Y-%m-%d-%H-%M)  
+          DATE=$(date +%Y-%m-%dT%H-%M)  
           mvn versions:set -DnewVersion=${GITHUB_REPOSITORY#GITHUB_REPOSITORY_OWNER}-$VERSION_NUM-${GITHUB_REF_NAME//\//-}-$DATE
 
       - name: Build Maven Package
