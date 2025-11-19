@@ -37,9 +37,8 @@ jobs:
       - name: Update Maven to release tag
         #Versions:use-release only updates the dependencies, not the project
         run: |
-          FLOCK=$(mvn versions:lock-snapshots) 
-          LOCK=$(echo $FLOCK | grep -Eo '[0-9]+\-[0-9]+\-[0-9]+\-[0-9]+\-[0-9]+')
-          mvn versions:set -DnewVersion=${GITHUB_REPOSITORY#GITHUB_ACTOR}-$VERSION_NUM-${GITHUB_REF_NAME//\//-}-$LOCK
+          DATE=$(date +%Y-%m-%d-%H-%M)  
+          mvn versions:set -DnewVersion=${GITHUB_REPOSITORY#GITHUB_REPOSITORY_OWNER}-$VERSION_NUM-${GITHUB_REF_NAME//\//-}-$DATE
 
       - name: Build Maven Package
         run: mvn --batch-mode package --file pom.xml
