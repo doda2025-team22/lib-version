@@ -28,14 +28,6 @@ public class VersionUtilTest
         return new TestSuite( VersionUtilTest.class );
     }
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
-
     public void testGetVersion()
     {
         assertEquals(VersionUtil.getVersion(), "1.0-SNAPSHOT");
