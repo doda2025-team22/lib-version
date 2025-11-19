@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
-      contents: read
+      contents: write #to be able to commit the pom file
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -60,3 +60,11 @@ jobs:
         run: |
           mvn versions:set -DnewVersion=$RELEASE_MAJOR.$RELEASE_MINOR.$((RELEASE_PATCH + 1))-SNAPSHOT
           mvn versions:commit
+
+      - name: Commit new maven version to git
+        run: |
+          git config user.name "github-actions-main_release ($GITHUB_ACTOR)"
+          git config user.email ""
+          git add pom.xml
+          git commit -m "Github action: Releasing newly updated pom.xml as a result of $GITHUB_WORKFLOW workflow"
+          git push
