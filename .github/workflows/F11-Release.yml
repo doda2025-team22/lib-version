@@ -39,7 +39,7 @@ jobs:
       - name: Update Maven to release tag
         #Versions:use-release only updates the dependencies, not the project
         run: |
-          RELEASE=${VERSION#-SNAPSHOT}
+          RELEASE=${VERSION%-SNAPSHOT}
           mvn versions:set -DnewVersion=$RELEASE
 
       - name: Build Maven Package
