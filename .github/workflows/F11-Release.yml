@@ -33,14 +33,20 @@ jobs:
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) 
           echo "Project version: " $VERSION
+          RELEASE=${VERSION%-SNAPSHOT}
+          MAJOR=$(echo "$RELEASE" | cut -d . -f 1)
+          MINOR=$(echo "$RELEASE" | cut -d . -f 2)
+          PATCH=$(echo "$RELEASE" | cut -d . -f 3)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
+          echo "RELEASE_MAJOR=$MAJOR" >> $GITHUB_ENV
+          echo "RELEASE_MINOR=$MINOR" >> $GITHUB_ENV
+          echo "RELEASE_PATCH=$PATCH" >> $GITHUB_ENV
 
       #UPDATE THE RELEASE BASED ON MAIN or BRANCH
       - name: Update Maven to release tag
         #Versions:use-release only updates the dependencies, not the project
-        run: |
-          RELEASE=${VERSION%-SNAPSHOT}
-          mvn versions:set -DnewVersion=$RELEASE
+        run: mvn versions:set -DnewVersion=$RELEASE
 
       - name: Build Maven Package
         run: mvn --batch-mode package --file pom.xml
@@ -51,6 +57,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set New Maven Version
-        run: |
-          mvn versions:set -DnextSnapshot=$VERSION
-          # mvn versions:commit
+        run: mvn versions:set -DnewVersion=$RELEASE_MAJOR.$RELEASE_MINOR.${RELEASE_PATCH + 1}-SNAPSHOT
