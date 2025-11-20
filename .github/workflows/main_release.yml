@@ -5,14 +5,13 @@ on:
   # workflow_dispatch:
   # If there is a push to main that contains a valid version formatting or the key word 'release'. Run the workflow. (Version will be ignored, since the workflow will create the tag again to force consistency)
   push:
-    branches:
-      - main
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
       - release
 
 jobs:
   build_package:
+    if: github.event.base_ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       packages: write
