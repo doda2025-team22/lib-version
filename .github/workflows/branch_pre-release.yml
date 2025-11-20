@@ -25,7 +25,7 @@ jobs:
         run: |
           branch=$(git branch -r --contains ${{ github.ref }} --format "%(refname:lstrip=3)")
           echo "Found $branch"
-          echo "BRANCH=$branch" >> $GITHUB_OUTPUT
+          echo "branch=$branch" >> $GITHUB_OUTPUT
 
   build_package:
     runs-on: ubuntu-latest
@@ -77,7 +77,7 @@ jobs:
 
       - name: Tag the release
         run: |
-          git checkout ${{ steps.retrieve_branch.outputs.branch }}
+          git checkout ${{ needs.retrieve_branch.outputs.branch }}
           git tag $RELEASE
           git push origin $RELEASE
 
