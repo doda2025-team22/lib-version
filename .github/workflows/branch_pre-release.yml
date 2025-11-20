@@ -81,8 +81,8 @@ jobs:
       - name: Tag the release
         run: |
           git checkout ${{ needs.retrieve_branch.outputs.branch }}
-          git tag $RELEASE
-          git push origin $RELEASE
+          git tag $VERSION
+          git push origin $VERSION
 
       # - name: Commit new maven version to git
       #   run: |
