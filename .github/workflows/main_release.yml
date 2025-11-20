@@ -16,6 +16,9 @@ jobs:
       packages: write
       contents: write #to be able to commit the pom file
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Check branch
         run: |
           branch=$(git branch -r --contains ${{ github.ref }} --format "%(refname:lstrip=3)") # lstrip=<n> removes everything upto and including <n> slashes
@@ -24,9 +27,6 @@ jobs:
             echo "$branch is not main"
             exit 0
           fi
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Setup JDK 25 # Java -v >= 25.0.1
         uses: actions/setup-java@v4 # Creates a settings.xml
