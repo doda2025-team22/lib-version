@@ -19,8 +19,9 @@ jobs:
       - name: Check branch
         run: |
           branch=$(git branch -r --contains ${{ github.ref }} --format "%(refname:lstrip=3)") # lstrip=<n> removes everything upto and including <n> slashes
-          if [$branch != 'main']; then 
-            echo $branch "is not main"
+          echo "Found $branch"
+          if [ $branch != 'main' ]; then 
+            echo "$branch is not main"
             exit 0
           fi
 
