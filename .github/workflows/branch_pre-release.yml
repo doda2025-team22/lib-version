@@ -22,7 +22,7 @@ jobs:
 
       - name: Check last commit
         run: |
-          branch=$(git branch --contains ${{ github.ref }}) 
+          branch=$(git branch -r --contains ${{ github.ref }}) 
           echo "Found $branch"
           echo "BRANCH=$branch" >> $GITHUB_ENV
           exit 0
