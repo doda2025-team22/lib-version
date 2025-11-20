@@ -50,7 +50,7 @@ jobs:
           server-id: doda-team22_libversion # Value of the distributionManagement id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      - name: Delete original Tag
+      - name: Delete remote tag
         run: git push --delete origin ${GITHUB_REF#refs/tags/} #since the worklow only triggers with a tag, this should, in theory, not break
 
       - name: Read pom.xml version tag
@@ -70,11 +70,17 @@ jobs:
       #     DATE=$(date +%Y-%m-%d-%H-%M)
       #     mvn versions:set -DnewVersion=${GITHUB_REPOSITORY##*/}-$VERSION_NUM-${GITHUB_REF_NAME//\//-}-$DATE
 
-      - name: Build Maven Package
-        run: mvn --batch-mode package --file pom.xml
+      - name: Package Maven
+        run: |
+          BRANCH="${{ needs.retrieve_branch.outputs.branch }}"
+          SANITIZED=${BRANCH//\//_}
+          mvn --batch-mode package --file pom.xml -Dbranch=$SANITIZED
 
       - name: publish the package to github packages
-        run: mvn deploy --settings ${{ github.workspace }}/settings.xml
+        run: |
+          BRANCH="${{ needs.retrieve_branch.outputs.branch }}"
+          SANITIZED=${BRANCH//\//_}
+          mvn deploy --settings ${{ github.workspace }}/settings.xml -Dbranch=$SANITIZED
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -83,11 +89,3 @@ jobs:
           git checkout ${{ needs.retrieve_branch.outputs.branch }}
           git tag $VERSION
           git push origin $VERSION
-
-      # - name: Commit new maven version to git
-      #   run: |
-      #     git config user.name "ghactions-$GITHUB_REF_NAME ($GITHUB_ACTOR)"
-      #     git config user.email ""
-      #     git add pom.xml
-      #     git commit -m "Github action: Releasing newly updated pom.xml as a result of $GITHUB_WORKFLOW workflow"
-      #     git push
