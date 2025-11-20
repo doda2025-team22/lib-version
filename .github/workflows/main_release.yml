@@ -72,6 +72,7 @@ jobs:
 
       - name: Commit new maven version to git
         run: |
+          git checkout main
           git config user.name "ghactions-MAIN ($GITHUB_ACTOR)"
           git config user.email ""
           git add pom.xml
