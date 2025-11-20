@@ -4,6 +4,8 @@ on:
   #Manually create a release package
   workflow_dispatch:
   push:
+    branches-ignore:
+      - main
 
 jobs:
   build_package:
@@ -35,7 +37,8 @@ jobs:
           echo "VERSION_NUM=$VERSION_NUM" >> $GITHUB_ENV
 
       - name: Update Maven to release tag
-        #Versions:use-release only updates the dependencies, not the project
+        #If i deploy with -SNAPSHOT it seems to change '-SNAPSHOT' into a Timestamp. This should work since im not commiting this change to the new release. 
+      # Will make the code cleaner and less messy. And follows the instructions better. 
         run: |
           DATE=$(date +%Y-%m-%d-%H-%M)  
           mvn versions:set -DnewVersion=${GITHUB_REPOSITORY##*/}-$VERSION_NUM-${GITHUB_REF_NAME//\//-}-$DATE
@@ -48,10 +51,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit new maven version to git
-        run: |
-          git config user.name "ghactions-$GITHUB_REF_NAME ($GITHUB_ACTOR)"
-          git config user.email ""
-          git add pom.xml
-          git commit -m "Github action: Releasing newly updated pom.xml as a result of $GITHUB_WORKFLOW workflow"
-          git push
+      # - name: Commit new maven version to git
+      #   run: |
+      #     git config user.name "ghactions-$GITHUB_REF_NAME ($GITHUB_ACTOR)"
+      #     git config user.email ""
+      #     git add pom.xml
+      #     git commit -m "Github action: Releasing newly updated pom.xml as a result of $GITHUB_WORKFLOW workflow"
+      #     git push
