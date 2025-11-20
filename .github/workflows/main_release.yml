@@ -2,12 +2,14 @@
 name: release version-aware package
 on:
   #Manually create a release package
-  workflow_dispatch:
+  # workflow_dispatch:
+  # If there is a push to main that contains a valid version formatting or the key word 'release'. Run the workflow. (Version will be ignored, since the workflow will create the tag again to force consistency)
   push:
     branches:
       - main
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
+      - release
 
 jobs:
   build_package:
@@ -28,6 +30,9 @@ jobs:
           server-id: doda-team22_libversion # Value of the distributionManagement id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
+      - name: Delete original Tag
+        run: git push --delete origin ${GITHUB_REF#refs/tags/} #since the worklow only triggers with a tag, this should, in theory, not break
+
       # New and experimental
       - name: Read pom.xml version tag
         # Parse the input version tag (from the tag push) and store it in an environment variable
@@ -45,10 +50,14 @@ jobs:
           echo "RELEASE_MINOR=$MINOR" >> $GITHUB_ENV
           echo "RELEASE_PATCH=$PATCH" >> $GITHUB_ENV
 
-      #UPDATE THE RELEASE BASED ON MAIN or BRANCH
       - name: Update Maven to release tag
         #Versions:use-release only updates the dependencies, not the project
         run: mvn versions:set -DnewVersion=$RELEASE
+
+      - name: Tag the release
+        run: |
+          git tag $RELEASE
+          git push origin $RELEASE
 
       - name: Build Maven Package
         run: mvn --batch-mode package --file pom.xml

@@ -2,10 +2,13 @@
 name: release version-aware package
 on:
   #Manually create a release package
-  workflow_dispatch:
+  # workflow_dispatch:
   push:
     branches-ignore:
       - main
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+      - release
 
 jobs:
   build_package:
@@ -26,22 +29,25 @@ jobs:
           server-id: doda-team22_libversion # Value of the distributionManagement id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      # New and experimental
+      - name: Delete original Tag
+        run: git push --delete origin ${GITHUB_REF#refs/tags/} #since the worklow only triggers with a tag, this should, in theory, not break
+
       - name: Read pom.xml version tag
         # Parse the input version tag (from the tag push) and store it in an environment variable
         # https://maven.apache.org/plugins/maven-help-plugin/evaluate-mojo.html
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) 
           echo "Project version: " $VERSION
-          VERSION_NUM=$(echo $VERSION | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+') #Retrieves the 3 digit version number
-          echo "VERSION_NUM=$VERSION_NUM" >> $GITHUB_ENV
+          # VERSION_NUM=$(echo $VERSION | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+') #Retrieves the 3 digit version number
+          # echo "VERSION_NUM=$VERSION_NUM" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Update Maven to release tag
-        #If i deploy with -SNAPSHOT it seems to change '-SNAPSHOT' into a Timestamp. This should work since im not commiting this change to the new release. 
-      # Will make the code cleaner and less messy. And follows the instructions better. 
-        run: |
-          DATE=$(date +%Y-%m-%d-%H-%M)  
-          mvn versions:set -DnewVersion=${GITHUB_REPOSITORY##*/}-$VERSION_NUM-${GITHUB_REF_NAME//\//-}-$DATE
+      # - name: Update Maven to release tag
+      #   #If i deploy with -SNAPSHOT it seems to change '-SNAPSHOT' into a Timestamp. This should work since im not commiting this change to the new release.
+      #   # Will make the code cleaner and less messy. And follows the instructions better.
+      #   run: |
+      #     DATE=$(date +%Y-%m-%d-%H-%M)
+      #     mvn versions:set -DnewVersion=${GITHUB_REPOSITORY##*/}-$VERSION_NUM-${GITHUB_REF_NAME//\//-}-$DATE
 
       - name: Build Maven Package
         run: mvn --batch-mode package --file pom.xml
@@ -50,6 +56,11 @@ jobs:
         run: mvn deploy --settings ${{ github.workspace }}/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag the release
+        run: |
+          git tag $RELEASE
+          git push origin $RELEASE
 
       # - name: Commit new maven version to git
       #   run: |
