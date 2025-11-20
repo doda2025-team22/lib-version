@@ -1,5 +1,5 @@
 #Workflow that creates a new package on any new release or when manually triggered
-name: release version-aware package
+name: release version-aware BRANCH package
 on:
   #Manually create a release package
   # workflow_dispatch:
