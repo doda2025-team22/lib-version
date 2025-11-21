@@ -38,7 +38,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+        with: 
+          fetch-depth: 0
       - name: Setup JDK 25 # Java -v >= 25.0.1
         uses: actions/setup-java@v4 # Creates a settings.xml
         with:
