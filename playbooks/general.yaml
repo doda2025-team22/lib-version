@@ -7,6 +7,77 @@
         name: [curl, apt-transport-https, ca-certificates, software-properties-common, gnupg]
         state: present
 
-    - name: Disable swap
+    - name: Disable swap for the current session
       command: swapoff -a
       when: ansible_swaptotal_mb > 0
+
+    - name: Comment out swap entries in /etc/fstab to disable on boot
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        regexp: '^\s*(.+\s+swap\s+.+)$'
+        state: present
+        line: '# \1'
+        backrefs: yes
+
+    # Step 6: Ensure overlay and br_netfilter are loaded on boot
+    - name: Create modules-load config for Kubernetes
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/k8s.conf
+        content: |
+          overlay
+          br_netfilter
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Load br_netfilter module immediately
+      ansible.builtin.modprobe:
+        name: br_netfilter
+        state: present
+
+    # Step 7 Enable IPv4 forwarding
+    - name: Enable IP forwarding for Kubernetes
+      ansible.builtin.sysctl:
+        name: net.ipv4.ip_forward # enable ipv4 forwarding
+        value: 1
+        state: present
+        reload: yes # doesnt need reboot to apply
+
+    - name: Enable bridged IPv4 traffic to iptables
+      ansible.builtin.sysctl:
+        name: net.bridge.bridge-nf-call-iptables # iptables con now see the bridged packets
+        value: 1
+        state: present
+        reload: yes
+
+    - name: Enable bridged IPv6 traffic to iptables
+      ansible.builtin.sysctl:
+        name: net.bridge.bridge-nf-call-ip6tables
+        value: 1
+        state: present
+        reload: yes
+
+    # Step 8
+    - name: Copy /etc/hosts for cluster nodes
+      ansible.builtin.copy:
+        src: hosts
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: '0644' # this should be the standard permissions
+
+    # Step 9
+    - name: Add Kubernetes key
+      ansible.builtin.apt_key:
+        url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
+        state: present
+
+    - name: Add Kubernetes repo
+      ansible.builtin.apt_repository:
+        repo: "deb https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /"
+        state: present
+        filename: kubernetes
+
+    - name: Update cache
+      ansible.builtin.apt:
+        update_cache: yes

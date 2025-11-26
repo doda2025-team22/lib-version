@@ -1,0 +1,9 @@
+# this will be copied for /etc/hosts for Kubernetes cluster
+127.0.0.1       localhost
+
+# Control node
+192.168.56.100  ctrl
+
+# Worker nodes
+192.168.56.101  node-1
+192.168.56.102  node-2
