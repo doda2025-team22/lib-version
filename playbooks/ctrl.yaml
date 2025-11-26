@@ -1,0 +1,33 @@
+---
+- hosts: control
+  become: true
+  tasks:
+    - name: Ensure the controller hostname is correct
+      hostname:
+        name: ctrl
+    - name: Create a test file on controller
+      copy:
+        content: "Hello from controller playbook!"
+        dest: /home/vagrant/ctrl_test.txt
+        owner: vagrant
+        group: vagrant
+        mode: '0644'
+
+
+#    - name: Install kubeadm, kubelet, kubectl for ctrl
+#      apt:
+#        name:
+#          - kubelet
+#          - kubeadm
+#          - kubectl
+#        state: present
+#        update_cache: yes
+#
+#    - name: Hold Kubernetes packages at current version for ctrl
+#      apt:
+#        name:
+#          - kubelet
+#          - kubeadm
+#          - kubectl
+#        state: present
+#        mark: hold

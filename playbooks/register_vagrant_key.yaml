@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Add Vagrant public key for passwordless SSH
+      authorized_key:
+        user: vagrant
+        state: present
+        key: "{{ lookup('file', '~/vagrant_insecure_key.pub') }}"

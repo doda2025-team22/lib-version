@@ -1,0 +1,20 @@
+---
+- name: Register the ssh keys
+  hosts: all
+  become: true
+  vars:
+    ssh_keys:
+      - "./keys/ada.pub"
+  tasks:
+    - name: Ensure SSH public keys are installed
+      ansible.posix.authorized_key:
+        user: vagrant
+        state: present
+        key: "{{ lookup('file', item) }}"
+      loop: "{{ ssh_keys }}"
+#  tasks:
+#    - name: Add my host SSH public key for passwordless SSH
+#      authorized_key:
+#        user: vagrant
+#        state: present
+#        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
