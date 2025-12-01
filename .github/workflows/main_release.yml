@@ -73,6 +73,14 @@ jobs:
         #Versions:use-release only updates the dependencies, not the project
         run: mvn versions:set -DnewVersion=$RELEASE
 
+
+      - name: Commit new maven version to git
+        run: |
+          git checkout main
+          git add pom.xml
+          git commit -m "Github action: Commiting stable release with updated pom.xml as a result of $GITHUB_WORKFLOW workflow"
+          git push
+        
       - name: Tag the release
         run: |
           git checkout main
