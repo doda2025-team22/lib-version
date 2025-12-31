@@ -79,17 +79,10 @@
 
       <distributionManagement>
         <repository>
-          <id>doda-team22_libversion</id>
+          <id>github</id>
           <name>doda_team22 Maven Packages</name>
           <url>https://maven.pkg.github.com/doda2025-team22/lib-version</url>
         </repository>
-        
-        <snapshotRepository>
-          <id>doda-team22_libversion</id>
-          <name>doda_team22 Maven Packages (Snapshots)</name>
-          <url>https://maven.pkg.github.com/doda2025-team22/lib-version</url>
-      </snapshotRepository>
-
       </distributionManagement>
 
 
