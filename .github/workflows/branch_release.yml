@@ -1,4 +1,4 @@
-name: Release lib-version Maven package
+name: Pre-Release lib-version Maven package
 
 on:
   push:
@@ -67,7 +67,6 @@ jobs:
 
       - name: Remove snapshot and Retrieve Version
         run: |
-          mvn versions:set versions:commit -DremoveSnapshot -q
           RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=${RELEASE_VERSION}" >> $GITHUB_ENV
 
@@ -80,17 +79,8 @@ jobs:
           MAVEN_USERNAME: ${{ github.actor }}
           MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Bump version
-      #   run: |
-      #     mvn release:update-versions --batch-mode
-      #     PRERELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-
-      # - name: Create commit
-      #   run: |
-      #     git config --global user.name "${{ github.actor }}"
-      #     git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-
-      #     git add pom.xml
-      #     git commit -m "Bump version to ${PRERELEASE_VERSION} [skip ci]"
-      #     git push
-      #
+      - name: Tag the release
+        run: |
+          git checkout ${{ github.ref_name }}
+          git tag $VERSION
+          git push origin $VERSION
