@@ -35,7 +35,7 @@
                     <goal>attach-artifact</goal>
                   </goals>
                   <configuration>
-                    <skip>${branch}</skip>
+                    <skip>${skip.branch.artifact}</skip>
                     <artifacts>
                       <artifact>
                         <file>${project.build.directory}/${project.build.finalName}.jar</file>
